@@ -11,7 +11,7 @@ export class RequestAnalyticsDto {
   user_id: string;
 
   @ApiProperty({
-    example: 'data_title',
+    example: 'finacial analysis of XYZ company for the year 2023',
     description: 'The title of the data being requested',
   })
   @IsNotEmpty()
@@ -19,20 +19,12 @@ export class RequestAnalyticsDto {
   data_title: string;
 
   @ApiProperty({
-    example: 'data_description',
+    example: 'this is a request for a financial analysis of XYZ company so as the provide better decision making',
     description: 'A description of the data being requested',
   })
   @IsNotEmpty()
   @IsString()
   data_description: string;
-
-  @ApiProperty({
-    example: 'data_type',
-    description: 'The type of data being requested',
-  })
-  @IsNotEmpty()
-  @IsString()
-  data_type: string;
 
   @ApiProperty({
     example: 'data:file/pdf;base64,iVBORw0KGgoAAAANSUhEUgAA... (truncated)',
@@ -50,6 +42,14 @@ export class RequestAnalyticsDto {
   @IsNotEmpty()
   @IsString()
   request_type_id: string;
+
+  @ApiProperty({
+    example: '60d0fe4f5311236168a109ceb',
+    description: 'The ID of the category',
+  })
+  @IsNotEmpty()
+  @IsString()
+  category_id: string;
 
   @ApiProperty({
     example: 0,

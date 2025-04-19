@@ -16,17 +16,17 @@ export class RequestAnalytics {
     @Prop({
         required: true,
     })
+    category_id: string;
+
+    @Prop({
+        required: true,
+    })
     data_title: string;
 
     @Prop({
         required: true,
     })
     data_description: string;
-
-    @Prop({
-        required: true,
-    })
-    data_type: string;
 
     @Prop({
         required: true,
