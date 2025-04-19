@@ -35,8 +35,9 @@ export class RequestAnalyticsDto {
   data_type: string;
 
   @ApiProperty({
-    example: 'data_file',
-    description: 'The file associated with the data request',
+    example: 'data:file/pdf;base64,iVBORw0KGgoAAAANSUhEUgAA... (truncated)',
+    description: 'Base64-encoded user profile image',
+
   })
   @IsNotEmpty()
   @IsString()

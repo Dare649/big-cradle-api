@@ -25,10 +25,10 @@ export class RequestAnalyticsController {
     })
     async create_request_analytics(
         @Body() dto: RequestAnalyticsDto,
-        @Body() base64_file: string,
+        @Body('data_file') base64_file?: string,
     ) {
         try {
-            return this.request_analytics.create_request_analytics(dto, base64_file);
+            return this.request_analytics.create_request_analytics(dto, base64_file || '');
         } catch (error) {
             throw new BadRequestException(`Error creating  request type ${error.message}`);
         }
