@@ -19,7 +19,7 @@ export class RequestAnalyticsController {
 
     @Post('create_request_analytics')
     @UseGuards(AuthGuard, RoleGuard)
-    @Roles(Role.ADMIN)
+    @Roles(Role.ADMIN, Role.BUSINESS)
     @ApiOperation({
         summary: 'This API create a  request_analytics'
     })
@@ -37,7 +37,7 @@ export class RequestAnalyticsController {
 
     @Put('update_request_analytics/:id')
     @UseGuards(AuthGuard, RoleGuard)
-    @Roles(Role.ADMIN)
+    @Roles(Role.ADMIN, Role.BUSINESS)
     @ApiOperation({
         summary: 'This API updates a  request type'
     })
@@ -56,7 +56,7 @@ export class RequestAnalyticsController {
 
     @Delete('delete_request_analytics/:id')
     @UseGuards(AuthGuard, RoleGuard)
-    @Roles(Role.ADMIN)
+    @Roles(Role.ADMIN, Role.BUSINESS)
     @ApiOperation({
         summary: 'This api allows the admin user to delete an existing  request type'
     })
@@ -72,7 +72,7 @@ export class RequestAnalyticsController {
 
 
     @Get('get_request_analytics/:id')
-    @Roles(Role.ADMIN)
+    @Roles(Role.ADMIN, Role.BUSINESS)
     @ApiOperation({
         summary: 'This api gets an existing  request_analytics by id'
     })
@@ -88,7 +88,7 @@ export class RequestAnalyticsController {
 
 
     @Get('get_request_analytics/:user_id')
-    @Roles(Role.ADMIN)
+    @Roles(Role.ADMIN, Role.BUSINESS)
     @ApiOperation({
         summary: 'This api gets an existing  request_analytics by user_id'
     })
