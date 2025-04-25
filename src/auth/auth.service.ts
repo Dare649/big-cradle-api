@@ -52,7 +52,7 @@ import {
       const user = new this.userModel({
         ...dto,
         hash,
-        business_logo: image_url,
+        user_img: image_url,
         otp,
         otp_expires_at, // <-- Match this field name
         is_verified: false,

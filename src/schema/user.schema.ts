@@ -74,7 +74,7 @@ export class User {
     @Prop({
         required: true
     })
-    business_logo: string;
+    user_img: string;
 
     @Prop({
         default: false,

@@ -114,6 +114,6 @@ export class SignUpDto {
     })
     @IsString()
     @IsNotEmpty()
-    business_logo: string;
+    user_img: string;
 
 }
