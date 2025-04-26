@@ -47,6 +47,7 @@ export class RequestAnalytics {
     data_consent: number;
 
     @Prop({
+        type: String,
         required: false,
         enum: ['pending', 'in progress', 'completed'],
         default: null,
