@@ -16,25 +16,41 @@ export class CloudinaryService {
         cloudinary.config(config);
     }
 
-    async uploadFile(base64File: string, publicId?: string, resourceType: 'image' | 'raw' = 'raw'): Promise<UploadApiResponse> {
+    // Function to upload images
+    async uploadImage(base64Image: string, publicId?: string): Promise<UploadApiResponse> {
         try {
-            // Upload the file to Cloudinary
-            const result = await cloudinary.uploader.upload(base64File, {
+            const result = await cloudinary.uploader.upload(base64Image, {
                 public_id: publicId,
-                resource_type: resourceType, // Allow different resource types
+                resource_type: 'image',
             });
-
-            // Check if result contains a valid URL
+    
             if (!result.secure_url) {
-                throw new Error('File upload successful, but no secure URL was returned.');
+                throw new Error('Image upload successful, but no secure URL was returned.');
             }
-
+    
             return result;
         } catch (error) {
             console.error('Cloudinary upload error:', error);
-
-            // Provide more detailed error message from Cloudinary
             throw new Error(`Cloudinary upload failed: ${error.message || 'Unknown error'}`);
+        }
+    }
+
+    // Function to upload generic files (PDF, Excel, Documents)
+    async uploadFile(base64File: string, publicId?: string): Promise<UploadApiResponse> {
+        try {
+            const result = await cloudinary.uploader.upload(base64File, {
+                public_id: publicId,
+                resource_type: 'auto',  // Automatically detects file type
+            });
+    
+            if (!result.secure_url) {
+                throw new Error('File upload successful, but no secure URL was returned.');
+            }
+    
+            return result;
+        } catch (error) {
+            console.error('Cloudinary file upload error:', error);
+            throw new Error(`Cloudinary file upload failed: ${error.message || 'Unknown error'}`);
         }
     }
 

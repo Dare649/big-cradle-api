@@ -38,7 +38,7 @@ import {
     
       try {
         const public_id = `user_profiles/${Date.now()}`;
-        const upload_result = await this.cloudinary_service.uploadFile(base64_image, public_id, 'image');
+        const upload_result = await this.cloudinary_service.uploadImage(base64_image, public_id);
         image_url = upload_result.secure_url;
       } catch (error) {
         this.logger.error('Error uploading user image:', error);

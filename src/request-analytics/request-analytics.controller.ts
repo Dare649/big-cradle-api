@@ -54,6 +54,23 @@ export class RequestAnalyticsController {
     }
 
 
+    @Put('update_request_analytics_status/:id')
+    @UseGuards(AuthGuard, RoleGuard)
+    @Roles(Role.ADMIN)
+    @ApiOperation({
+        summary: 'This API updates a request analytics status'
+    })
+    async update_request_analytics_status(
+        @Param('id') id: string,
+    ) {
+        try {
+            return this.request_analytics.update_request_analytics_status(id);
+        } catch (error) {
+            throw new BadRequestException(`Error updating  ${error.message}`);
+        }
+    }
+
+
     @Delete('delete_request_analytics/:id')
     @UseGuards(AuthGuard, RoleGuard)
     @Roles(Role.ADMIN, Role.BUSINESS)

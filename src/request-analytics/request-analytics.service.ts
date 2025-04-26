@@ -28,7 +28,7 @@ export class RequestAnalyticsService {
 
         try {
             const public_id = `user_profiles/${Date.now()}`;
-            const upload_result = await this.cloudinary_service.uploadFile(base64_file, public_id, 'raw');
+            const upload_result = await this.cloudinary_service.uploadFile(base64_file, public_id);
             file_url = upload_result.secure_url;
         } catch (error) {
             this.logger.error('Error uploading file:', error);
@@ -39,6 +39,7 @@ export class RequestAnalyticsService {
             const request_analytics = new this.request_analytics_model({
                 ...dto,
                 data_file: file_url,
+                status: 'pending',
             });
 
             const saved_request_analytics = await request_analytics.save();
@@ -75,7 +76,7 @@ export class RequestAnalyticsService {
 
                 try {
                     const public_id = `user_profiles/${Date.now()}`;
-                    const upload_result = await this.cloudinary_service.uploadFile(base64_file, public_id, 'raw');
+                    const upload_result = await this.cloudinary_service.uploadFile(base64_file, public_id);
                     file_url = upload_result.secure_url; // Update the file URL
                 } catch (error) {
                     this.logger.error('Error uploading file:', error);
@@ -210,5 +211,48 @@ export class RequestAnalyticsService {
             throw new BadRequestException('Failed to retrieve total request analytics count by user ID.');
         }
     }
+
+    // update the request status 
+    async update_request_analytics_status(id: string) {
+    try {
+        const request = await this.request_analytics_model.findById(id);
+
+        if (!request) {
+        throw new BadRequestException('Request analytics not found.');
+        }
+
+        let new_status: 'pending' | 'in progress' | 'completed';
+
+        switch (request.status) {
+        case 'pending':
+            new_status = 'in progress';
+            break;
+        case 'in progress':
+            new_status = 'completed';
+            break;
+        case 'completed':
+            return {
+            success: false,
+            message: 'Request is already completed.',
+            data: request,
+            };
+        default:
+            throw new BadRequestException('Invalid status value.');
+        }
+
+        request.status = new_status;
+        const updated = await request.save();
+
+        return {
+        success: true,
+        message: `Status updated to ${new_status}`,
+        data: updated,
+        };
+    } catch (error) {
+        this.logger.error('Error updating request status:', error);
+        throw new BadRequestException('Failed to update request status.');
+    }
+    }
+
 
 }

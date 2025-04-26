@@ -20,10 +20,10 @@ export class AuthController {
   })
   async signUp(
     @Body() dto: SignUpDto,
-    @Body('business_logo') base64_image?: string,
+    @Body('user_img') base64_file?: string,
   ) {
     try {
-      return await this.authService.sign_up(dto, base64_image || '');
+      return await this.authService.sign_up(dto, base64_file || '');
     } catch (error) {
       throw new HttpException(error.message || 'Failed to sign up', error.status || HttpStatus.BAD_REQUEST);
     }
