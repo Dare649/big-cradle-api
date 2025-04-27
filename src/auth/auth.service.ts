@@ -22,7 +22,7 @@ import {
   
     constructor(
       @InjectModel(User.name)
-      private readonly userModel: Model<UserDocument>,
+      private readonly user_model: Model<UserDocument>,
       private readonly jwt: JwtService,
       private readonly config: ConfigService,
       private cloudinary_service: CloudinaryService,
@@ -49,7 +49,7 @@ import {
       const otp = Math.floor(1000 + Math.random() * 9000).toString();
       const otp_expires_at = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
     
-      const user = new this.userModel({
+      const user = new this.user_model({
         ...dto,
         hash,
         user_img: image_url,
@@ -110,7 +110,7 @@ import {
   
     // Verify OTP
     async verifyOtp(email: string, otp: string) {
-      const user = await this.userModel.findOne({ email });
+      const user = await this.user_model.findOne({ email });
 
       if (!user) {
         throw new UnauthorizedException('User not found.');
@@ -148,7 +148,7 @@ import {
   
     // Resend OTP
     async resendOtp(email: string) {
-      const user = await this.userModel.findOne({ email });
+      const user = await this.user_model.findOne({ email });
   
       if (!user) {
         throw new UnauthorizedException('User not found.');
@@ -167,7 +167,7 @@ import {
       await user.save();
   
       try {
-        await this.sendOtpEmail(email, new_otp, user.business_name);
+        await this.sendOtpEmail(email, new_otp, user.business_name ?? "");
         return {
           message: 'OTP has been resent to your email.',
         };
@@ -178,7 +178,7 @@ import {
   
     // User sign-in
     async sign_in(dto: SignInDto) {
-      const user = await this.userModel.findOne({ email: dto.email });
+      const user = await this.user_model.findOne({ email: dto.email });
   
       if (!user) {
         throw new UnauthorizedException('Invalid credentials.');
@@ -194,7 +194,7 @@ import {
         throw new UnauthorizedException('Invalid credentials.');
       }
   
-      const token = await this.generateToken(user.email, user.id, user.role);
+      const token = await this.generateToken(user.email ?? "", user.id, user.role);
   
       // Exclude the hash from the returned user data
     //   const userData = user.toObject();
@@ -228,7 +228,7 @@ import {
   
 
     async getUserById(userId: string) {
-      const user = await this.userModel.findById(userId).select('-hash'); // Exclude password hash
+      const user = await this.user_model.findById(userId).select('-hash'); // Exclude password hash
       if (!user) {
         throw new UnauthorizedException('User not found.');
       }

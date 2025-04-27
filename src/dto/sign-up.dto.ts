@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, Matches, MaxLength, MinLength, IsNotEmpty, IsString } from 'class-validator';
+import {  Matches, MaxLength, MinLength, IsNotEmpty, IsString } from 'class-validator';
+
 
 export class SignUpDto {
   @ApiProperty({
@@ -78,7 +79,7 @@ export class SignUpDto {
 
 
     @ApiProperty({
-        example: 'USA', 
+        example: 'USA@mail.com', 
         description: 'Company businness email',
     })
     @IsString()
@@ -109,7 +110,7 @@ export class SignUpDto {
     password: string;
 
     @ApiProperty({
-        example: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA... (truncated)',
+        example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
         description: 'Base64-encoded user profile image',
     })
     @IsString()

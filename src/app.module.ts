@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
 import { RequestTypeModule } from './request-type/request-type.module';
 import { RequestAnalyticsModule } from './request-analytics/request-analytics.module';
+import { UsersModule } from './users/users.module';
 
 
 @Module({
@@ -25,6 +26,7 @@ import { RequestAnalyticsModule } from './request-analytics/request-analytics.mo
     CategoryModule,
     RequestTypeModule,
     RequestAnalyticsModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],

@@ -44,7 +44,7 @@ export class RequestAnalyticsController {
     async update_request_analytics(
         @Param('id') id: string,
         @Body() dto: RequestAnalyticsDto,
-        @Body() base64_file: string,
+        @Body() base64_file?: string,
     ) {
         try {
             return this.request_analytics.update_request_analytics(id, dto, base64_file);

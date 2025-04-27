@@ -2,62 +2,51 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Role } from "../enum/roles.enum";
 import { Document } from "mongoose";
 
-
 export type UserDocument = User & Document;
-
 
 @Schema({ timestamps: true })
 export class User {
-    @Prop({
-        required: true,
-    })
-    business_name: string;
+    @Prop()
+    business_name?: string;
 
-    @Prop({
-        required: true
-    })
-    contact_name: string;
+    @Prop()
+    contact_name?: string;
 
-    @Prop({
-        required: true
-    })
-    contact_number: string;
+    @Prop()
+    contact_number?: string;
 
-    @Prop({
-        required: true
-    })
-    business_address: string;
+    @Prop()
+    business_address?: string;
 
-    @Prop({
-        required: true
-    })
-    business_city: string;
+    @Prop()
+    business_city?: string;
 
-    @Prop({
-        required: true
-    })
-    business_state: string;
+    @Prop()
+    business_state?: string;
 
-    @Prop({
-        required: true
-    })
-    business_country: string;
+    @Prop()
+    business_country?: string;
 
-    @Prop({
-        required: true
-    })
-    sector: string;
+    @Prop()
+    sector?: string;
 
-    @Prop({
-        required: true
-    })
-    organization_size: string;
+    @Prop()
+    first_name?: string;
+
+    @Prop()
+    last_name?: string;
+
+    @Prop()
+    department?: string;
+
+    @Prop()
+    organization_size?: string;
 
     @Prop({
         required: true,
         unique: true
     })
-    email: string;
+    email?: string;
 
     @Prop({
         required: true,
@@ -71,10 +60,8 @@ export class User {
     })
     hash: string;
 
-    @Prop({
-        required: true
-    })
-    user_img: string;
+    @Prop()
+    user_img?: string;
 
     @Prop({
         default: false,
@@ -92,7 +79,9 @@ export class User {
 
     @Prop()
     otp_expires_at?: Date;
-}
 
+    @Prop()
+    business_user_id?: string;
+}
 
 export const UserSchema = SchemaFactory.createForClass(User);

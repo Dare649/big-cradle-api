@@ -57,7 +57,7 @@ export class RequestAnalyticsService {
 
 
     // update request analytics
-    async update_request_analytics(id: string, dto: RequestAnalyticsDto, base64_file: string) {
+    async update_request_analytics(id: string, dto: RequestAnalyticsDto, base64_file?: string) {
         try {
             const updated_request_analytics = await this.request_analytics_model.findById(id).exec();
 
