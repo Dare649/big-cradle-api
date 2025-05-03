@@ -4,7 +4,15 @@ import { IsNotEmpty, IsString, IsEnum } from 'class-validator';
 export class RequestAnalyticsDto {
   @ApiProperty({
     example: '60d0fe4f5311236168a109ceb',
-    description: 'The ID of the user making the request',
+    description: 'The ID of the business (business_user_id) attached to a user or the ID of the business or the admin user  making the request',
+  })
+  @IsNotEmpty()
+  @IsString()
+  business_user_id: string;
+
+  @ApiProperty({
+    example: '60d0fe4f5311236168a109ceb',
+    description: 'The ID of user making the request',
   })
   @IsNotEmpty()
   @IsString()

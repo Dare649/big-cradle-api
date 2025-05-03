@@ -19,7 +19,7 @@ export class RequestAnalyticsController {
 
     @Post('create_request_analytics')
     @UseGuards(AuthGuard, RoleGuard)
-    @Roles(Role.ADMIN, Role.BUSINESS)
+    @Roles(Role.ADMIN, Role.BUSINESS, Role.USER)
     @ApiOperation({
         summary: 'This API create a  request_analytics'
     })
@@ -37,7 +37,7 @@ export class RequestAnalyticsController {
 
     @Put('update_request_analytics/:id')
     @UseGuards(AuthGuard, RoleGuard)
-    @Roles(Role.ADMIN, Role.BUSINESS)
+    @Roles(Role.ADMIN, Role.BUSINESS, Role.USER)
     @ApiOperation({
         summary: 'This API updates a  request type'
     })
@@ -73,7 +73,7 @@ export class RequestAnalyticsController {
 
     @Delete('delete_request_analytics/:id')
     @UseGuards(AuthGuard, RoleGuard)
-    @Roles(Role.ADMIN, Role.BUSINESS)
+    @Roles(Role.ADMIN, Role.BUSINESS,Role.USER)
     @ApiOperation({
         summary: 'This api allows the admin user to delete an existing  request type'
     })
@@ -104,18 +104,35 @@ export class RequestAnalyticsController {
     }
 
 
-    @Get('get_request_analytics/:user_id')
+    @Get('get_request_analytics/by_business/:business_user_id')
     @Roles(Role.ADMIN, Role.BUSINESS)
     @ApiOperation({
-        summary: 'This api gets an existing  request_analytics by user_id'
+        summary: 'This api gets an existing  request analytics by business'
     })
-    async get_request_analytics_by_user_id(
+    async get_request_analytics_by_business(
+        @Param('business_user_id') user_id: string,
+        @Param('page') page: number,
+        @Param('limit') limit: number
+    ): Promise<any> {
+        try {
+            return this.request_analytics.get_request_analytics_by_business(user_id, page, limit);
+        } catch (error) {
+            throw new BadRequestException(`Error retrieving  request type details: ${error.message}`);
+        }
+    }
+
+    @Get('get_request_analytics/by_bussiness_user/:user_id')
+    @Roles(Role.ADMIN, Role.BUSINESS, Role.USER)
+    @ApiOperation({
+        summary: 'This api gets an existing  request analytics by users of a business'
+    })
+    async get_request_analytics_by_business_user(
         @Param('user_id') user_id: string,
         @Param('page') page: number,
         @Param('limit') limit: number
     ): Promise<any> {
         try {
-            return this.request_analytics.get_request_analytics_by_user_id(user_id, page, limit);
+            return this.request_analytics.get_request_analytics_by_user(user_id, page, limit);
         } catch (error) {
             throw new BadRequestException(`Error retrieving  request type details: ${error.message}`);
         }

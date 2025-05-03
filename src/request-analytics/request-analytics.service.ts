@@ -22,7 +22,7 @@ export class RequestAnalyticsService {
         let file_url: string;
 
         // Validate the base64 string format
-        if (!base64_file || !base64_file.startsWith('data:application/pdf;base64,')) {
+        if (!base64_file || !base64_file.startsWith('data:')) {
             throw new BadRequestException('Invalid file format. Please provide a valid base64-encoded.');
         }
 
@@ -70,7 +70,7 @@ export class RequestAnalyticsService {
 
             if (base64_file && typeof base64_file === 'string') {
                 // Validate the base64 string format
-                if (!base64_file.startsWith('data:application/pdf;base64,')) {
+                if (!base64_file.startsWith('data')) {
                     throw new BadRequestException('Invalid file format. Please provide a valid base64-encoded.');
                 }
 
@@ -161,22 +161,67 @@ export class RequestAnalyticsService {
     }
 
 
-    // get request analytics by user id with pagination
-    async get_request_analytics_by_user_id(user_id: string, page: number, limit: number) {
+    async get_request_analytics_by_business(business_user_id: string, page: number, limit: number) {
         try {
-            const skip = (page - 1) * limit;
-            const request_analytics = await this.request_analytics_model.find({ user_id }).skip(skip).limit(limit).exec();
-
-            return {
-                success: true,
-                message: 'Request analytics by user ID retrieved successfully',
-                data: request_analytics,
-            };
+          const skip = (page - 1) * limit;
+      
+          const [data, total] = await Promise.all([
+            this.request_analytics_model
+              .find({ business_user_id })
+              .skip(skip)
+              .limit(limit)
+              .exec(),
+            this.request_analytics_model.countDocuments({ business_user_id }),
+          ]);
+      
+          return {
+            success: true,
+            message: 'Request analytics by user ID retrieved successfully',
+            data,
+            pagination: {
+              total,
+              page,
+              limit,
+              pages: Math.ceil(total / limit),
+            },
+          };
         } catch (error) {
-            this.logger.error('Error retrieving request analytics by user ID:', error);
-            throw new BadRequestException('Failed to retrieve request analytics by user ID.');
+          this.logger.error('Error retrieving request analytics by user ID:', error);
+          throw new BadRequestException('Failed to retrieve request analytics by user ID.');
         }
-    }
+      }
+
+
+    async get_request_analytics_by_user(user_id: string, page: number, limit: number) {
+        try {
+          const skip = (page - 1) * limit;
+      
+          const [data, total] = await Promise.all([
+            this.request_analytics_model
+              .find({ user_id })
+              .skip(skip)
+              .limit(limit)
+              .exec(),
+            this.request_analytics_model.countDocuments({ user_id }),
+          ]);
+      
+          return {
+            success: true,
+            message: 'Request analytics by user ID retrieved successfully',
+            data,
+            pagination: {
+              total,
+              page,
+              limit,
+              pages: Math.ceil(total / limit),
+            },
+          };
+        } catch (error) {
+          this.logger.error('Error retrieving request analytics by user ID:', error);
+          throw new BadRequestException('Failed to retrieve request analytics by user ID.');
+        }
+      }
+      
 
 
     // get total request analytics count
@@ -214,44 +259,44 @@ export class RequestAnalyticsService {
 
     // update the request status 
     async update_request_analytics_status(id: string) {
-    try {
-        const request = await this.request_analytics_model.findById(id);
+        try {
+            const request = await this.request_analytics_model.findById(id);
 
-        if (!request) {
-        throw new BadRequestException('Request analytics not found.');
-        }
+            if (!request) {
+            throw new BadRequestException('Request analytics not found.');
+            }
 
-        let new_status: 'pending' | 'in progress' | 'completed';
+            let new_status: 'pending' | 'in progress' | 'completed';
 
-        switch (request.status) {
-        case 'pending':
-            new_status = 'in progress';
-            break;
-        case 'in progress':
-            new_status = 'completed';
-            break;
-        case 'completed':
+            switch (request.status) {
+            case 'pending':
+                new_status = 'in progress';
+                break;
+            case 'in progress':
+                new_status = 'completed';
+                break;
+            case 'completed':
+                return {
+                success: false,
+                message: 'Request is already completed.',
+                data: request,
+                };
+            default:
+                throw new BadRequestException('Invalid status value.');
+            }
+
+            request.status = new_status;
+            const updated = await request.save();
+
             return {
-            success: false,
-            message: 'Request is already completed.',
-            data: request,
+            success: true,
+            message: `Status updated to ${new_status}`,
+            data: updated,
             };
-        default:
-            throw new BadRequestException('Invalid status value.');
+        } catch (error) {
+            this.logger.error('Error updating request status:', error);
+            throw new BadRequestException('Failed to update request status.');
         }
-
-        request.status = new_status;
-        const updated = await request.save();
-
-        return {
-        success: true,
-        message: `Status updated to ${new_status}`,
-        data: updated,
-        };
-    } catch (error) {
-        this.logger.error('Error updating request status:', error);
-        throw new BadRequestException('Failed to update request status.');
-    }
     }
 
 

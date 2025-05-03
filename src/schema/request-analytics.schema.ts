@@ -12,6 +12,11 @@ export class RequestAnalytics {
         required: true,
     })
     user_id: string;
+    
+    @Prop({
+        required: true,
+    })
+    business_user_id: string;
 
     @Prop({
         required: true,
