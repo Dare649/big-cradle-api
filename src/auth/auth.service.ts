@@ -29,34 +29,40 @@ import {
     ) {}
   
     // User registration (Sign-up)
-    async sign_up(dto: SignUpDto, base64_image: string) {
-      if (!base64_image || !base64_image.startsWith('data:image/')) {
+    async sign_up(dto: SignUpDto, base64_image?: string) {
+      let image_url: string | undefined;
+
+      if (base64_image && base64_image.startsWith('data:image/')) {
+        try {
+          const public_id = `user_profiles/${Date.now()}`;
+          const upload_result = await this.cloudinary_service.uploadImage(base64_image, public_id);
+          image_url = upload_result.secure_url;
+        } catch (error) {
+          this.logger.error('Error uploading user image:', error);
+          throw new BadRequestException('Failed to upload user image.');
+        }
+      } else if (base64_image) {
         throw new BadRequestException('Invalid user image. Please provide a valid base64-encoded image.');
       }
-    
-      let image_url: string;
-    
-      try {
-        const public_id = `user_profiles/${Date.now()}`;
-        const upload_result = await this.cloudinary_service.uploadImage(base64_image, public_id);
-        image_url = upload_result.secure_url;
-      } catch (error) {
-        this.logger.error('Error uploading user image:', error);
-        throw new BadRequestException('Failed to upload user image.');
-      }
+      
     
       const hash = await argon.hash(dto.password);
       const otp = Math.floor(1000 + Math.random() * 9000).toString();
       const otp_expires_at = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
     
-      const user = new this.user_model({
+      const userData: any = {
         ...dto,
         hash,
-        user_img: image_url,
         otp,
-        otp_expires_at, // <-- Match this field name
+        otp_expires_at,
         is_verified: false,
-      });
+      };
+    
+      if (image_url) {
+        userData.user_img = image_url;
+      }
+    
+      const user = new this.user_model(userData);
     
       try {
         await this.sendOtpEmail(dto.email, otp, dto.business_name);

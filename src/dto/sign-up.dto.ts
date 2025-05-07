@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {  Matches, MaxLength, MinLength, IsNotEmpty, IsString } from 'class-validator';
+import {  Matches, MaxLength, MinLength, IsNotEmpty, IsString, IsOptional } from 'class-validator';
 
 
 export class SignUpDto {
@@ -113,8 +113,8 @@ export class SignUpDto {
         example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
         description: 'Base64-encoded user profile image',
     })
+    @IsOptional()
     @IsString()
-    @IsNotEmpty()
-    user_img: string;
+    user_img?: string;
 
 }
