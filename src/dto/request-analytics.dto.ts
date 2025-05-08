@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsString, IsEnum, IsOptional } from 'class-validator';
 
 export class RequestAnalyticsDto {
   @ApiProperty({
@@ -42,6 +42,15 @@ export class RequestAnalyticsDto {
   @IsNotEmpty()
   @IsString()
   data_file: string;
+
+  @ApiProperty({
+    example: 'data:file/pdf;base64,iVBORw0KGgoAAAANSUhEUgAA... (truncated)',
+    description: 'Base64-encoded user profile image',
+
+  })
+  @IsOptional()
+  @IsString()
+  completed_data_file: string;
 
   @ApiProperty({
     example: '60d0fe4f5311236168a109ceb',

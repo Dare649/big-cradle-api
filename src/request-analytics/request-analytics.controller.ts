@@ -62,9 +62,10 @@ export class RequestAnalyticsController {
     })
     async update_request_analytics_status(
         @Param('id') id: string,
+        @Body('base64_file') base64_file?: string,
     ) {
         try {
-            return this.request_analytics.update_request_analytics_status(id);
+            return this.request_analytics.update_request_analytics_status(id, base64_file);
         } catch (error) {
             throw new BadRequestException(`Error updating  ${error.message}`);
         }

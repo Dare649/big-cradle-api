@@ -39,6 +39,12 @@ export class RequestAnalytics {
     data_file: string;
 
     @Prop({
+        required: false,
+    })
+    completed_data_file: string;
+    
+
+    @Prop({
         required: true,
     })
     request_type_id: string;

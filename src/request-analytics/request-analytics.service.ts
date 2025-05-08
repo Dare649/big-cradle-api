@@ -257,47 +257,63 @@ export class RequestAnalyticsService {
         }
     }
 
+
     // update the request status 
-    async update_request_analytics_status(id: string) {
+    async update_request_analytics_status(id: string, base64_file?: string) {
         try {
             const request = await this.request_analytics_model.findById(id);
 
             if (!request) {
-            throw new BadRequestException('Request analytics not found.');
+                throw new BadRequestException('Request analytics not found.');
             }
 
             let new_status: 'pending' | 'in progress' | 'completed';
 
+            // Transition status logic
             switch (request.status) {
-            case 'pending':
-                new_status = 'in progress';
-                break;
-            case 'in progress':
-                new_status = 'completed';
-                break;
-            case 'completed':
-                return {
-                success: false,
-                message: 'Request is already completed.',
-                data: request,
-                };
-            default:
-                throw new BadRequestException('Invalid status value.');
+                case 'pending':
+                    new_status = 'in progress';
+                    break;
+                case 'in progress':
+                    new_status = 'completed';
+                    // Require file upload when changing status to completed
+                    if (!base64_file || !base64_file.startsWith('data:')) {
+                        throw new BadRequestException('A file is required when updating to "completed".');
+                    }
+                    try {
+                        const public_id = `completed_files/${Date.now()}`;
+                        const upload_result = await this.cloudinary_service.uploadFile(base64_file, public_id);
+                        request.data_file = upload_result.secure_url; // Update the file URL when status changes to completed
+                    } catch (error) {
+                        this.logger.error('Error uploading file:', error);
+                        throw new BadRequestException('Failed to upload file.');
+                    }
+                    break;
+                case 'completed':
+                    return {
+                        success: false,
+                        message: 'Request is already completed.',
+                        data: request,
+                    };
+                default:
+                    throw new BadRequestException('Invalid status value.');
             }
 
+            // Update the status
             request.status = new_status;
             const updated = await request.save();
 
             return {
-            success: true,
-            message: `Status updated to ${new_status}`,
-            data: updated,
+                success: true,
+                message: `Status updated to ${new_status}`,
+                data: updated,
             };
         } catch (error) {
             this.logger.error('Error updating request status:', error);
             throw new BadRequestException('Failed to update request status.');
         }
     }
+
 
 
 }
